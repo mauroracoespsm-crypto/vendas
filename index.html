@@ -922,6 +922,22 @@ body.booting #bootMsg{display:flex;position:fixed;inset:0;z-index:100;align-item
 @keyframes bspin{to{transform:rotate(360deg)}}
 #bootErr{position:fixed;inset:auto 1rem 1rem 1rem;z-index:101;background:white;border:1px solid #f0b9c0;border-radius:16px;padding:1rem;text-align:center;box-shadow:0 10px 30px rgba(23,33,135,.2)}
 #bootErr button{margin-top:.6rem}
+
+/* ===== conta do cliente ===== */
+#acctDlg{width:min(420px,94vw)}
+.gbtn{width:100%;display:flex;align-items:center;justify-content:center;gap:.6rem;padding:.75rem;border-radius:999px;background:white;border:1px solid var(--line);font-weight:700;color:var(--ink);box-shadow:0 2px 8px rgba(23,33,135,.06)}
+.gbtn:hover:not(:disabled){background:#f7f8fc}
+.actabs{display:grid;grid-template-columns:1fr 1fr;background:#eef0f7;border-radius:12px;padding:3px;margin-bottom:.8rem}
+.actabs button{border:0;background:transparent;border-radius:9px;padding:.45rem;font-weight:700;color:var(--muted);box-shadow:none}
+.actabs button[aria-pressed=true]{background:white;color:var(--blue);box-shadow:0 2px 6px rgba(23,33,135,.1)}
+.acctbox{display:flex;align-items:center;justify-content:space-between;gap:.8rem;flex-wrap:wrap}
+.acctbox .who{display:flex;align-items:center;gap:.7rem}
+.acctbox .av{width:42px;height:42px;border-radius:50%;background:var(--blue);color:white;display:grid;place-items:center;font-weight:800;flex:none;overflow:hidden}
+.acctbox .av img{width:100%;height:100%;object-fit:cover}
+.acctbox small{display:block;color:var(--muted)}
+.acctnote{display:flex;align-items:center;justify-content:space-between;gap:.6rem;flex-wrap:wrap;margin:0 0 .7rem;padding:.6rem .8rem;border-radius:14px;background:#eef1ff;border:1px solid #d6dcff;font-size:.9rem}
+.acctnote:empty{display:none}
+.acctnote.on{background:#dff4e8;border-color:#bfe5cf}
 </style>
 </head>
 <body>
@@ -1010,6 +1026,7 @@ body.booting #bootMsg{display:flex;position:fixed;inset:0;z-index:100;align-item
     </div>
     <div class="comini" id="coMini"></div>
     <div class="costep" data-step="1">
+        <div class="acctnote" id="coAcct"></div>
         <fieldset class="part">
           <legend>Seus dados</legend>
           <label>Telefone / WhatsApp<input id="oFone" inputmode="tel" maxlength="16" placeholder="(83) 99999-9999"></label>
@@ -1088,6 +1105,7 @@ body.booting #bootMsg{display:flex;position:fixed;inset:0;z-index:100;align-item
         <button type="submit" class="primary">Ver pedidos</button>
       </form>
     </div>
+    <section id="acctBox" class="card acctbox" style="margin-top:1rem"></section>
     <section id="myProgs" class="card" style="margin-top:1rem" hidden></section>
     <div id="myList"></div>
   </section>
@@ -1303,6 +1321,24 @@ body.booting #bootMsg{display:flex;position:fixed;inset:0;z-index:100;align-item
 </dialog>
 
 <!-- editor de produto -->
+<dialog id="acctDlg">
+  <div class="dhead"><h2 id="acTitle">Entrar na sua conta</h2><button type="button" class="ghost" data-close aria-label="Fechar" data-ic="x"></button></div>
+  <div class="dbody">
+    <p class="muted" id="acSub" style="margin-top:0">Com a conta, seus pedidos e endereço aparecem em qualquer celular ou computador.</p>
+    <button type="button" class="gbtn" id="acGoogle"><svg viewBox="0 0 48 48" width="20" height="20" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.2-.1-2.3-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.2-.1-2.3-.4-3.5z"/></svg>Entrar com Google</button>
+    <div class="scanor"><span>ou com e-mail</span></div>
+    <div class="actabs" role="tablist"><button type="button" data-am="login" aria-pressed="true">Entrar</button><button type="button" data-am="signup" aria-pressed="false">Criar conta</button></div>
+    <form id="acForm" novalidate autocomplete="on">
+      <label id="acNomeL" hidden>Seu nome<input id="acNome" maxlength="60" autocomplete="name"></label>
+      <label id="acEmailL">E-mail<input id="acEmail" type="email" maxlength="120" autocomplete="email"></label>
+      <label id="acPassL">Senha<input id="acPass" type="password" maxlength="72" autocomplete="current-password"></label>
+      <label id="acConfL" hidden>Repita a senha<input id="acConf" type="password" maxlength="72" autocomplete="new-password"></label>
+      <p class="lkerr" id="acErr" role="alert"></p>
+      <button type="submit" class="primary" id="acGo" style="width:100%">Entrar</button>
+      <p style="text-align:center;margin:.7rem 0 0"><button type="button" class="lklink" id="acForgot">Esqueci a senha</button></p>
+    </form>
+  </div>
+</dialog>
 <dialog id="payDialog">
   <form method="dialog" id="payForm" novalidate>
   <div class="dhead"><h2 id="payTitle">Confirmar pagamento</h2><button type="button" class="ghost" data-close aria-label="Fechar" data-ic="x"></button></div>
@@ -1474,11 +1510,14 @@ const PETS = {cao:'Cão', gato:'Gato', passaros:'Pássaros', peixes:'Peixes', ou
 /* armazenamento */
 /* ===== VERSÃO ONLINE (Supabase) ===== */
 const SB_URL = 'https://enjzzwhjvgxiihmteuyu.supabase.co', SB_KEY = 'sb_publishable_nfrKVSYJD-rK8gltOxMVDA_wS-Nh5-Y';
-const sb = window.supabase ? window.supabase.createClient(SB_URL, SB_KEY, {auth:{persistSession:true, autoRefreshToken:true, detectSessionInUrl:true}}) : null;
+const sb = window.supabase ? window.supabase.createClient(SB_URL, SB_KEY, {auth:{persistSession:true, autoRefreshToken:true, detectSessionInUrl:true, flowType:'pkce'}}) : null;
+let custUser = null, custProfile = null;
 let resvServer = {}, orsOn = false, admUser = null, admOk = false, scope = 'shop';
 const mine = {orders:[], programs:[], doses:[]}, adm = {orders:[], programs:[], doses:[]};
 async function callFn(body) {
-  const r = await fetch(SB_URL + '/functions/v1/pedido', {method:'POST', headers:{'Content-Type':'application/json', apikey:SB_KEY}, body:JSON.stringify(body)});
+  const h = {'Content-Type':'application/json', apikey:SB_KEY};
+  try { const {data:{session}} = await sb.auth.getSession(); if (session && custUser) h.Authorization = 'Bearer ' + session.access_token; } catch {}
+  const r = await fetch(SB_URL + '/functions/v1/pedido', {method:'POST', headers:h, body:JSON.stringify(body)});
   let d = {}; try { d = await r.json(); } catch {}
   if (!r.ok && !d.error) d.error = 'Não foi possível falar com a loja agora. Tente de novo.';
   return d;
@@ -2586,6 +2625,7 @@ async function nextStep() {
 $('coNext').addEventListener('click', nextStep);
 $('coPrev').addEventListener('click', () => { if (coStep === 1) go('#/carrinho'); else setStep(coStep - 1, true); });
 function prepCheckout() {
+  renderAcct(); setTimeout(fillFromProfile, 0);
   const st = openState(); $('coClosed').hidden = st.open;
   if (!st.open) $('coClosed').innerHTML = ic('clock') + '<div><b>Estamos fechados agora.</b> Pode fazer o pedido normalmente: ele fica guardado e começamos a separar quando abrirmos, ' + esc(st.nextTxt) + '.</div>';
   cleanCart();
@@ -2723,6 +2763,7 @@ $('coForm').addEventListener('submit', async e => {
   const order = res.order;
   const prev = customers[fd] || {};
   customers[fd] = m === 'entrega' ? cust : {...prev, fone:fd, nome:cust.nome}; store.set('customers', customers);
+  saveProfile(m === 'entrega' ? cust : {fone:fd, nome:cust.nome});
   mine.orders.unshift(order); await refreshMine();
   seen[order.n] = 'recebido';
   cart = []; wasFree = null; saveCart(); renderGrid(); renderHello();
@@ -2860,9 +2901,10 @@ $('myProgs').addEventListener('click', async e => {
   renderMyProgs(); renderRemind(); renderHello(); if (page === 'my') renderMy();
 });
 function renderMy() {
+  renderAcct();
   const list = mine.orders, phone = me(), c = customers[phone];
   renderMyProgs();
-  $('myWho').innerHTML = list.length ? 'Pedidos feitos <b>neste aparelho</b>' + (c && c.nome ? ' · ' + esc(c.nome) : '') : 'Os pedidos feitos neste aparelho aparecem aqui.';
+  $('myWho').innerHTML = list.length ? (custUser ? 'Seus pedidos' : 'Pedidos feitos <b>neste aparelho</b>') + (c && c.nome ? ' · ' + esc(c.nome) : '') : 'Os pedidos feitos neste aparelho aparecem aqui.';
   $('myForm').hidden = true; $('myChange').hidden = true;
   $('myList').innerHTML = list.length ? list.map(o => {
     const items = o.items.reduce((s, i) => s + i.qty, 0);
@@ -3160,7 +3202,7 @@ async function enterPanel() {
 }
 async function afterLogin(user) {
   let ok = false; try { ok = await rpc('is_admin'); } catch {}
-  if (!ok) { await sb.auth.signOut(); admOk = false; return lkFail('Este e-mail não tem acesso ao painel.'); }
+  if (!ok) { admOk = false; await onCustLogin(user); return lkFail('Este e-mail é de cliente e não tem acesso ao painel.'); }
   admUser = user; admOk = true;
   if (user.user_metadata && user.user_metadata.must_change) return showLock('newpass');
   await enterPanel();
@@ -3197,7 +3239,12 @@ $('lockForm').addEventListener('submit', async e => {
 });
 $('lkEye').addEventListener('click', () => { const show = $('lkPass').type === 'password'; $('lkPass').type = $('lkConf').type = show ? 'text' : 'password'; $('lkEye').innerHTML = ic(show ? 'eyeoff' : 'eye'); $('lkEye').setAttribute('aria-label', show ? 'Esconder senha' : 'Mostrar senha'); });
 $('lkForgot').addEventListener('click', () => showLock('forgot'));
-if (sb) sb.auth.onAuthStateChange((ev, session) => { if (ev === 'PASSWORD_RECOVERY' && session) { admUser = session.user; admOk = false; setTimeout(() => { go('#/loja'); showLock('newpass'); }, 50); } });
+if (sb) sb.auth.onAuthStateChange((ev, session) => {
+  if (ev === 'PASSWORD_RECOVERY' && session) setTimeout(async () => {
+    let isAdm = false; try { isAdm = await rpc('is_admin'); } catch {}
+    if (isAdm) { admUser = session.user; admOk = false; go('#/loja'); showLock('newpass'); } else { custUser = session.user; go('#/pedidos'); openAcct('newpass'); }
+  }, 50);
+});
 $('lkNote').addEventListener('click', e => { if (e.target.id === 'lkCancel') showLock('login'); });
 $('lkShop').addEventListener('click', () => go('#/'));
 $('admOut').addEventListener('click', async () => { try { await sb.auth.signOut(); } catch {} admOk = false; admUser = null; if (rtChan) { sb.removeChannel(rtChan); rtChan = null; } setScope('shop'); await loadShop().catch(() => {}); feedback('Você saiu do painel.'); go('#/'); });
@@ -3674,6 +3721,97 @@ window.addEventListener('storage', e => {
 setInterval(() => { applyBf(); renderEntBar(); if (page === 'home') renderHello(); }, 30000);
 document.addEventListener('input', e => { if (e.target.classList?.contains('bad')) e.target.classList.remove('bad'); });
 
+/* ===== CONTA DO CLIENTE ===== */
+const custName = () => custProfile?.nome || custUser?.user_metadata?.full_name || custUser?.user_metadata?.name || custUser?.user_metadata?.nome || (custUser?.email || '').split('@')[0];
+let acMode = 'login';
+function acSet(m) {
+  acMode = m;
+  for (const b of document.querySelectorAll('[data-am]')) b.setAttribute('aria-pressed', b.dataset.am === m);
+  $('acNomeL').hidden = m !== 'signup'; $('acConfL').hidden = !(m === 'signup' || m === 'newpass');
+  $('acEmailL').hidden = m === 'newpass'; $('acPassL').hidden = m === 'forgot';
+  $('acForgot').hidden = m !== 'login';
+  document.querySelector('.actabs').hidden = m === 'forgot' || m === 'newpass';
+  $('acGoogle').hidden = m === 'forgot' || m === 'newpass'; document.querySelector('#acctDlg .scanor').hidden = m === 'forgot' || m === 'newpass';
+  $('acTitle').textContent = m === 'signup' ? 'Criar conta' : m === 'forgot' ? 'Recuperar senha' : m === 'newpass' ? 'Crie uma senha nova' : 'Entrar na sua conta';
+  $('acGo').textContent = m === 'signup' ? 'Criar conta' : m === 'forgot' ? 'Mandar link' : m === 'newpass' ? 'Salvar senha' : 'Entrar';
+  $('acPass').autocomplete = m === 'login' ? 'current-password' : 'new-password';
+  $('acErr').textContent = ''; $('acErr').style.color = '';
+}
+function openAcct(m = 'login') { acSet(m); $('acPass').value = ''; $('acConf').value = ''; $('acctDlg').showModal(); }
+document.querySelector('.actabs').addEventListener('click', e => { const b = e.target.closest('[data-am]'); if (b) acSet(b.dataset.am); });
+$('acForgot').addEventListener('click', () => acSet('forgot'));
+const acMsg = (m, ok) => { $('acErr').style.color = ok ? 'var(--green)' : ''; $('acErr').textContent = m; if (!ok) sound('error'); };
+const siteUrl = () => location.origin + location.pathname;
+$('acGoogle').addEventListener('click', async () => {
+  try { const {error} = await sb.auth.signInWithOAuth({provider:'google', options:{redirectTo:siteUrl() + '#/pedidos'}}); if (error) throw error; }
+  catch (err) { acMsg(/not enabled|provider/i.test(err.message || '') ? 'O login com Google ainda não foi ligado pela loja.' : 'Não foi possível abrir o Google agora.'); }
+});
+$('acForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const email = $('acEmail').value.trim().toLowerCase(), pass = $('acPass').value;
+  $('acGo').disabled = true;
+  try {
+    if (acMode === 'login') {
+      if (!email || !pass) return acMsg('Digite e-mail e senha.');
+      const {data, error} = await sb.auth.signInWithPassword({email, password:pass});
+      if (error) return acMsg(/confirm/i.test(error.message) ? 'Confirme seu e-mail primeiro (veja a caixa de entrada e o spam).' : /rate|many/i.test(error.message) ? 'Muitas tentativas. Espere um pouco.' : 'E-mail ou senha errados.');
+      await onCustLogin(data.user); $('acctDlg').close(); feedback('Bem-vindo, ' + custName() + '!');
+    } else if (acMode === 'signup') {
+      const nome = $('acNome').value.trim();
+      if (!nome) return acMsg('Digite seu nome.');
+      if (!/^\S+@\S+\.\S+$/.test(email)) return acMsg('Digite um e-mail válido.');
+      if (pass.length < 8) return acMsg('A senha precisa ter pelo menos 8 caracteres.');
+      if (pass !== $('acConf').value) return acMsg('As duas senhas não estão iguais.');
+      const {data, error} = await sb.auth.signUp({email, password:pass, options:{emailRedirectTo:siteUrl() + '#/pedidos', data:{nome}}});
+      if (error) return acMsg(/registered|exists/i.test(error.message) ? 'Esse e-mail já tem conta. Use "Entrar".' : /rate|many|seconds/i.test(error.message) ? 'Muitos cadastros agora. Tente em alguns minutos.' : /weak|password/i.test(error.message) ? 'Escolha uma senha mais forte.' : 'Não foi possível criar a conta agora.');
+      if (data.session) { await onCustLogin(data.user); $('acctDlg').close(); feedback('Conta criada!'); }
+      else acMsg('Conta criada! Enviamos um e-mail para ' + email + '. Clique no link dele para ativar (veja também o spam).', true);
+    } else if (acMode === 'forgot') {
+      if (!/^\S+@\S+\.\S+$/.test(email)) return acMsg('Digite seu e-mail.');
+      const {error} = await sb.auth.resetPasswordForEmail(email, {redirectTo:siteUrl() + '#/pedidos'});
+      if (error) return acMsg('Não foi possível mandar o e-mail agora. Tente em alguns minutos.');
+      acMsg('Pronto! Se esse e-mail tem conta, chega um link em alguns minutos (veja o spam).', true);
+    } else if (acMode === 'newpass') {
+      if (pass.length < 8) return acMsg('A senha precisa ter pelo menos 8 caracteres.');
+      if (pass !== $('acConf').value) return acMsg('As duas senhas não estão iguais.');
+      const {data, error} = await sb.auth.updateUser({password:pass});
+      if (error) return acMsg('Não foi possível salvar a senha.');
+      await onCustLogin(data.user); $('acctDlg').close(); feedback('Senha salva.');
+    }
+  } finally { $('acGo').disabled = false; }
+});
+async function onCustLogin(user) {
+  custUser = user;
+  try { await rpc('claim_device', {p_token:devToken}); } catch {}
+  try { const {data} = await sb.from('profiles').select('data').eq('user_id', user.id).maybeSingle(); custProfile = data ? data.data : null; } catch {}
+  if (custProfile && custProfile.fone) customers[custProfile.fone] = {...(customers[custProfile.fone] || {}), ...custProfile}; 
+  await refreshMine(); renderAcct(); renderHello(); if (page === 'my') renderMy();
+}
+async function saveProfile(c) {
+  if (!custUser) return;
+  custProfile = {...(custProfile || {}), ...c};
+  try { await sb.from('profiles').upsert({user_id:custUser.id, data:custProfile, updated_at:new Date().toISOString()}); } catch {}
+}
+function renderAcct() {
+  const box = $('acctBox'), note = $('coAcct');
+  if (custUser) {
+    const n = custName(), pic = custUser.user_metadata?.avatar_url;
+    box.innerHTML = '<div class="who"><span class="av">' + (pic ? '<img src="' + esc(pic) + '" alt="" referrerpolicy="no-referrer">' : esc(n.slice(0, 1).toUpperCase())) + '</span><span><b>' + esc(n) + '</b><small>' + esc(custUser.email || '') + '</small></span></div><button type="button" class="mini" id="acOut">Sair da conta</button>';
+    note.className = 'acctnote on'; note.innerHTML = '<span>' + ic('ok') + ' Comprando como <b>' + esc(n) + '</b>. O pedido fica na sua conta.</span>';
+  } else {
+    box.innerHTML = '<div class="who"><span class="av">' + ic('user') + '</span><span><b>Entre na sua conta</b><small>Veja seus pedidos em qualquer aparelho. Também dá para comprar sem conta.</small></span></div><button type="button" class="primary mini" data-acopen>Entrar ou criar conta</button>';
+    note.className = 'acctnote'; note.innerHTML = '<span>Tem conta? Entre para guardar seus pedidos e endereço.</span><button type="button" class="mini" data-acopen>Entrar</button>';
+  }
+  paintIcons(box); paintIcons(note);
+}
+document.addEventListener('click', async e => {
+  if (e.target.closest('[data-acopen]')) return openAcct('login');
+  if (e.target.closest('#acOut')) { await sb.auth.signOut(); custUser = null; custProfile = null; admOk = false; await refreshMine(); renderAcct(); renderHello(); if (page === 'my') renderMy(); feedback('Você saiu da conta.'); }
+});
+function fillFromProfile() {
+  const c = custProfile; if (!c) return;
+  for (const [id, k] of [['oFone', 'fone'], ['oNome', 'nome'], ['oEnd', 'end'], ['oBairro', 'bairro'], ['oComp', 'comp'], ['oRef', 'ref']]) if (!$(id).value && c[k]) $(id).value = k === 'fone' ? fone(c[k]) : c[k];
+}
 /* ===== AÇÕES DO PAINEL NO SERVIDOR ===== */
 function freshData() {}
 async function reloadProducts() { const {data, error} = await sb.from('products').select('id,data'); if (!error) { products = rowsToProducts(data); resCache = null; } }
@@ -3705,7 +3843,7 @@ async function boot() {
   await loadShop();
   try {
     const {data:{session}} = await sb.auth.getSession();
-    if (session) { let ok = false; try { ok = await rpc('is_admin'); } catch {} if (ok) { admUser = session.user; admOk = !(session.user.user_metadata && session.user.user_metadata.must_change); if (admOk) { await loadAdmin(); startRealtime(); } } }
+    if (session) { let ok = false; try { ok = await rpc('is_admin'); } catch {} if (ok) { admUser = session.user; admOk = !(session.user.user_metadata && session.user.user_metadata.must_change); if (admOk) { await loadAdmin(); startRealtime(); } } else await onCustLogin(session.user); }
   } catch {}
 }
 let refreshing = false;
